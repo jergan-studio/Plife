@@ -1,133 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Plife - Island Sim</title>
+<meta charset="utf-8" />
+<title>Plife 3D</title>
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #cfefff;
-}
-
+body { margin: 0; overflow: hidden; }
 #ui {
-    padding: 20px;
-}
-
-.card {
-    background: white;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 10px;
-}
-
-.log {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #111;
-    color: #0f0;
-    padding: 10px;
-    height: 150px;
-    overflow: auto;
-    font-size: 12px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+    font-family: Arial;
+    background: rgba(0,0,0,0.5);
+    padding: 8px;
+    border-radius: 6px;
 }
 </style>
 </head>
 
 <body>
+<div id="ui">🌴 Plife 3D - NPC Simulation</div>
 
-<div id="ui">
-    <h1>🌴 Plife Island</h1>
-    <div id="characters"></div>
-</div>
-
-<div class="log" id="log"></div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
 <script>
 // --------------------
-// CHARACTERS
+// BASIC SCENE
 // --------------------
-let characters = [
-    {name:"Alex", hunger:50, happiness:70, energy:80},
-    {name:"Mina", hunger:30, happiness:60, energy:90},
-    {name:"Rex", hunger:80, happiness:40, energy:50}
-];
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87ceeb);
 
-const logBox = document.getElementById("log");
-const charBox = document.getElementById("characters");
+const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
+);
 
-// --------------------
-// LOG SYSTEM
-// --------------------
-function log(msg){
-    let div = document.createElement("div");
-    div.textContent = msg;
-    logBox.appendChild(div);
-    logBox.scrollTop = logBox.scrollHeight;
-}
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
 // --------------------
-// RENDER
+// LIGHT
 // --------------------
-function render(){
-    charBox.innerHTML = "";
-
-    characters.forEach(c => {
-        let div = document.createElement("div");
-        div.className = "card";
-        div.innerHTML = `
-            <b>${c.name}</b><br>
-            🍔 Hunger: ${c.hunger}<br>
-            😊 Happiness: ${c.happiness}<br>
-            ⚡ Energy: ${c.energy}
-        `;
-        charBox.appendChild(div);
-    });
-}
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 10, 5);
+scene.add(light);
 
 // --------------------
-// SIM LOOP
+// GROUND (ISLAND)
 // --------------------
-function tick(){
+const groundGeo = new THREE.PlaneGeometry(50, 50);
+const groundMat = new THREE.MeshLambertMaterial({ color: 0x3cb371 });
+const ground = new THREE.Mesh(groundGeo, groundMat);
+ground.rotation.x = -Math.PI / 2;
+scene.add(ground);
 
-    characters.forEach(c => {
-        c.hunger += 2;
-        c.energy -= 1;
+// --------------------
+// NPC CLASS
+// --------------------
+class NPC {
+    constructor() {
+        const geo = new THREE.BoxGeometry(1, 1, 1);
+        const mat = new THREE.MeshLambertMaterial({ color: 0xff4444 });
+        this.mesh = new THREE.Mesh(geo, mat);
 
-        if(c.hunger > 70){
-            c.happiness -= 2;
-            log(`${c.name} is getting hungry...`);
-        }
+        this.mesh.position.x = (Math.random() - 0.5) * 20;
+        this.mesh.position.z = (Math.random() - 0.5) * 20;
+        this.mesh.position.y = 0.5;
 
-        if(c.energy < 30){
-            log(`${c.name} is tired.`);
-        }
-    });
+        scene.add(this.mesh);
 
-    // random event
-    let a = characters[Math.floor(Math.random()*characters.length)];
-    let b = characters[Math.floor(Math.random()*characters.length)];
-
-    if(Math.random() < 0.4){
-        let events = [
-            `${a.name} ate food.`,
-            `${a.name} took a walk.`,
-            `${a.name} talked with ${b.name}.`,
-            `${a.name} got into a small argument with ${b.name}.`
-        ];
-
-        log(events[Math.floor(Math.random()*events.length)]);
+        this.target = this.newTarget();
     }
 
-    render();
+    newTarget() {
+        return {
+            x: (Math.random() - 0.5) * 20,
+            z: (Math.random() - 0.5) * 20
+        };
+    }
+
+    update() {
+        const speed = 0.02;
+
+        const dx = this.target.x - this.mesh.position.x;
+        const dz = this.target.z - this.mesh.position.z;
+
+        this.mesh.position.x += dx * speed;
+        this.mesh.position.z += dz * speed;
+
+        // pick new target when close
+        if (Math.abs(dx) < 0.5 && Math.abs(dz) < 0.5) {
+            this.target = this.newTarget();
+        }
+    }
 }
 
 // --------------------
-// START
+// CREATE NPCs
 // --------------------
-render();
-setInterval(tick, 3000);
+const npcs = [];
+for (let i = 0; i < 8; i++) {
+    npcs.push(new NPC());
+}
+
+// --------------------
+// CAMERA POSITION
+// --------------------
+camera.position.set(0, 10, 10);
+camera.lookAt(0, 0, 0);
+
+// --------------------
+// ANIMATION LOOP
+// --------------------
+function animate() {
+    requestAnimationFrame(animate);
+
+    npcs.forEach(npc => npc.update());
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// --------------------
+// RESIZE FIX
+// --------------------
+window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
 </script>
 
 </body>
